@@ -1,0 +1,15 @@
+# Builder image
+FROM node:13.10-buster-slim as build
+
+# Set working directory
+WORKDIR /app
+
+# Install and cache the app dependencies
+COPY package*.json /app
+RUN yarn install
+COPY ./ .
+RUN yarn run build --mode stage
+
+# Production image
+FROM node:13.10-buster-slim
+COPY --from=build /app/dist /usr/src/viiru-home-spa
